@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            background-color: white;
+        }
+
+        .gridContainer {
+            display: grid;
+            grid-template-areas:
+                "display display display display"
+                "mod clear clear-back divide"
+                "seven eight nine multiply"
+                "four five six subtract"
+                "one two three add"
+                "zero zero equals add";
+            grid-template-columns: repeat(4, 80px);
+            grid-template-rows: repeat(6, 80px);
+            gap: 5px;
+        }
+
+        .gridContainer div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: larger;
+            background-color: white;
+             border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+        .gridContainer div:hover {
+            background-color: #e8e8e8;
+        }
+
+        #display {
+            grid-area: display;
+            background-color: #fbf2f2;
+            text-align: right;
+            font-size: large;
+            padding: 10px;
+            border: 2px solid #ccc;
+        }
+
+        #mod { grid-area: mod; }
+        #clear { grid-area: clear; }
+        #clear-back { grid-area: clear-back; }
+        #divide { grid-area: divide; }
+        #multiply { grid-area: multiply; }
+        #subtract { grid-area: subtract; }
+        #add { grid-area: add; }
+        #equals { grid-area: equals; }
+        #one { grid-area: one; }
+        #two { grid-area: two; }
+        #three { grid-area: three; }
+        #four { grid-area: four; }
+        #five { grid-area: five; }
+        #six { grid-area: six; }
+        #seven { grid-area: seven; }
+        #eight { grid-area: eight; }
+        #nine { grid-area: nine; }
+        #zero { grid-area: zero; }
+    </style>
+</head>
+<body>
+<div class="gridContainer">
+    <div id="display"> <h3 id="ekranYazisi"> </h3></div>
+    <div id="mod" class="btn btn-primary"style="color:black" onclick="operationClicked('%')">%</div>
+    <div id="clear" onclick="deleteAll()" class="btn btn-danger"style="color:black">AC</div>
+    <div onclick="deleteByOne()"class="btn btn-danger"style="color:black" id="clear-back">C</div>
+    <div onclick="operationClicked('/')"class="btn btn-primary" style="color:black" id="divide">/</div>
+    <div onclick="operationClicked('*')"class="btn btn-primary" style="color:black" id="multiply">*</div>
+    <div onclick="operationClicked('-')"class="btn btn-primary"style="color:black" id="subtract">-</div>
+    <div onclick="operationClicked('+')"class="btn btn-primary"style="color:black" id="add">+</div>
+    <div onclick="result()" id="equals"class="btn btn-success"style="color:black">=</div>
+    <div onclick="valueClicked(1)"class="btn btn-warning"style="color:black" id="one">1</div>
+    <div onclick="valueClicked(2)"class="btn btn-warning"style="color:black" id="two">2</div>
+    <div onclick="valueClicked(3)"class="btn btn-warning"style="color:black" id="three">3</div>
+    <div onclick="valueClicked(4)"class="btn btn-warning"style="color:black" id="four">4</div>
+    <div onclick="valueClicked(5)"class="btn btn-warning"style="color:black" id="five">5</div>
+    <div onclick="valueClicked(6)"class="btn btn-warning"style="color:black" id="six">6</div>
+    <div onclick="valueClicked(7)"class="btn btn-warning"style="color:black" id="seven">7</div>
+    <div onclick="valueClicked(8)"class="btn btn-warning"style="color:black" id="eight">8</div>
+    <div onclick="valueClicked(9)"class="btn btn-warning"style="color:black" id="nine">9</div>
+    <div onclick="valueClicked(0)"class="btn btn-warning"style="color:black" id="zero">0</div>
+</div>
+<script>
+let processCheckArr = [];
+let valueArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
+let operationArray = ["+", "-", "/", "*", "%"];
+
+let neticeDeyeri = 0;
+let ekranYazisi = document.getElementById("ekranYazisi");
+
+function valueClicked(value) {
+    if (valueArray.includes(value)) {
+        ekranYazisi.innerHTML += value;
+        processCheckArr.push(value);
+        console.log(processCheckArr);
+    }
+}
+
+function operationClicked(operation) {
+    if (operationArray.includes(operation)) {
+        if (processCheckArr.length > 0 && !operationArray.includes(processCheckArr[processCheckArr.length - 1])) {
+            ekranYazisi.innerHTML += operation;
+            processCheckArr.push(operation);
+        }
+    }
+}
+
+function result() {
+    let formul = "";
+    let finalArray = [];
+    let combined = "";
+    
+    for (let j = 0; j < processCheckArr.length; j++) {
+        if (Number.isInteger(processCheckArr[j])) {
+            combined += processCheckArr[j].toString();
+        } else {
+            if (combined !== "") {
+                finalArray.push(combined);
+                combined = ""; 
+            }
+            finalArray.push(processCheckArr[j]);
+        }
+    }
+    if (combined !== "") {
+        finalArray.push(combined);
+    }
+
+    for (let i = 0; i < finalArray.length; i++) {
+        formul += finalArray[i] + " ";
+    }
+
+    let netice = eval(formul);
+    ekranYazisi.innerHTML = netice;
+    console.log(finalArray)
+}
+
+function deleteAll() {
+    processCheckArr.length = 0;
+    ekranYazisi.innerHTML = "";
+}
+
+function deleteByOne() {
+    let formul = "";
+
+    processCheckArr.pop();
+    for (let i = 0; i < processCheckArr.length; i++) {
+        formul += processCheckArr[i] + " ";
+    }
+    ekranYazisi.innerHTML = formul;
+}
+</script>
+</body>
+</html>
